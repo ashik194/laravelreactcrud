@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Hash;
 
 class UserController extends Controller
 {
@@ -38,6 +39,16 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
+        $user = new User;
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'User Created Successfully...',
+        ]);
+        
     }
 
     /**
@@ -49,6 +60,8 @@ class UserController extends Controller
     public function show($id)
     {
         //
+        $user = User::find($id);
+        return response()->json($user);
     }
 
     /**
@@ -60,6 +73,7 @@ class UserController extends Controller
     public function edit($id)
     {
         //
+        return response()->json(User::where("id",$id)->first());
     }
 
     /**
@@ -72,6 +86,13 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $user = User::find($id);
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->update();
+        return response()->json([
+            'message' => 'User Updated Successfully....',
+        ]);
     }
 
     /**
@@ -83,5 +104,10 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+        $user = User::find($id);
+        $user->delete();
+        return response()->json([
+            'message' => "User Deleted Successfully...",
+        ]);
     }
 }
